@@ -10,11 +10,11 @@ class Venue(db.Model):
     __tablename__ = 'venue'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
     address = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
+    phone = db.Column(db.String(120), unique=True)
     genres = db.Column((db.String(120)))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
@@ -58,10 +58,10 @@ class Artist(db.Model):
     __tablename__ = 'artist'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True, nullable=False)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
-    phone = db.Column(db.String(120))
+    phone = db.Column(db.String(120), unique=True)
     genres = db.Column((db.String(120)))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
