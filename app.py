@@ -355,30 +355,30 @@ def edit_artist_submission(artist_id):
     # TODO: take values from the form submitted, and update existing
     # artist record with ID <artist_id> using the new attributes
     form = ArtistForm(request.form)
-    if bool(re.fullmatch('[A-Za-z]{2,25}( [A-Za-z]{2,25})?', form.name.data)):
-        try:
-            artist = Artist.query.filter_by(id=artist_id).first()
-            artist.name = form.name.data
-            artist.genres = ','.join(form.genres.data)
-            artist.city = form.city.data
-            artist.state = form.state.data
-            artist.phone = form.phone.data
-            artist.facebook_link = form.facebook_link.data
-            artist.image_link = form.image_link.data
-            artist.website_link = form.website_link.data
-            artist.seeking_description = form.seeking_description.data
-            artist.is_looking_venues = form.seeking_venue.data
-            db.session.commit()
-            flash('Artist ' + request.form['name'] + ' was successfully updated!')
-        except:
-            db.session.rollback()
-            print(sys.exc_info())
-            flash('An error occurred. Artist ' + request.form['name'] + ' could not be updated!')
-        finally:
-            db.session.close()
-    else:
-        flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
-        flash('An error occurred. Name Format is not Correct')
+    # if bool(re.fullmatch('[A-Za-z]{2,25}( [A-Za-z]{2,25})?', form.name.data)):
+    try:
+        artist = Artist.query.filter_by(id=artist_id).first()
+        artist.name = form.name.data
+        artist.genres = ','.join(form.genres.data)
+        artist.city = form.city.data
+        artist.state = form.state.data
+        artist.phone = form.phone.data
+        artist.facebook_link = form.facebook_link.data
+        artist.image_link = form.image_link.data
+        artist.website_link = form.website_link.data
+        artist.seeking_description = form.seeking_description.data
+        artist.is_looking_venues = form.seeking_venue.data
+        db.session.commit()
+        flash('Artist ' + request.form['name'] + ' was successfully updated!')
+    except:
+        db.session.rollback()
+        print(sys.exc_info())
+        flash('An error occurred. Artist ' + request.form['name'] + ' could not be updated!')
+    finally:
+        db.session.close()
+    # else:
+    #     flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+    #     flash('An error occurred. Name Format is not Correct')
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -445,40 +445,43 @@ def create_artist_submission():
     # TODO: insert form data as a new Venue record in the db, instead
     # TODO: modify data to be the data object returned from db insertion
     form = ArtistForm(request.form)
+    if form.validate():
+        #if bool(re.fullmatch('[A-Za-z]{2,25}( [A-Za-z]{2,25})?', form.name.data)):
+        try:
+            artist = Artist(
+                name=form.name.data,
+                genres=','.join(form.genres.data),
+                city=form.city.data,
+                state=form.state.data,
+                phone=form.phone.data,
+                facebook_link=form.facebook_link.data,
+                image_link=form.image_link.data,
+                website_link=form.website_link.data,
+                is_looking_venues=form.seeking_venue.data,
+                seeking_description=form.seeking_description.data)
 
-    #if bool(re.fullmatch('[A-Za-z]{2,25}( [A-Za-z]{2,25})?', form.name.data)):
-    try:
-        artist = Artist(
-            name=form.name.data,
-            genres=','.join(form.genres.data),
-            city=form.city.data,
-            state=form.state.data,
-            phone=form.phone.data,
-            facebook_link=form.facebook_link.data,
-            image_link=form.image_link.data,
-            website_link=form.website_link.data,
-            is_looking_venues=form.seeking_venue.data,
-            seeking_description=form.seeking_description.data)
-
-        db.session.add(artist)
-        db.session.commit()
-        # on successful db insert, flash success
-        flash('Artist ' + request.form['name'] + ' was successfully listed!')
-    except:
-        db.session.rollback()
-        flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
-        print(sys.exc_info())
-    finally:
-        db.session.close()
-   # else:
-    #    flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
-    #    flash('An error occurred. Name Format is not Correct')
+            db.session.add(artist)
+            db.session.commit()
+            # on successful db insert, flash success
+            flash('Artist ' + request.form['name'] + ' was successfully listed!')
+        except:
+            db.session.rollback()
+            flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+            print(sys.exc_info())
+        finally:
+            db.session.close()
+       # else:
+        #    flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+        #    flash('An error occurred. Name Format is not Correct')
+        return render_template('pages/home.html')
+    else:
+        return render_template('forms/new_artist.html', form=form)
 
     # on successful db insert, flash success
 
     # TODO: on unsuccessful db insert, flash an error instead.
     # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
-    return render_template('pages/home.html')
+
 
 
 #  Shows
